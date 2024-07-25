@@ -39,14 +39,14 @@ public class CozinhaController {
 
         cozinhaAtual.setNome(cozinha.getNome());
 
-        return cozinhaRepository.salvar(cozinhaAtual);
+        return cadastroCozinha.salvar(cozinhaAtual);
     }
 
     @DeleteMapping("/{cozinhaId}")
     public void remover(@PathVariable Long cozinhaId) {
         Cozinha cozinhaAtual = cozinhaRepository.buscar(cozinhaId);
         if(cozinhaAtual != null) {
-            cozinhaRepository.remover(cozinhaAtual);
+            cadastroCozinha.remover(cozinhaAtual);
         }
     }
 }

@@ -17,4 +17,6 @@ public class CadastroCozinhaService {
     public void remover(Cozinha cozinhaId) {
         cozinhaRepository.remover(cozinhaId);
     }
+
+
 }
