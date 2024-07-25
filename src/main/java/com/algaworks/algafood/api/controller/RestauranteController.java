@@ -30,8 +30,9 @@ public class RestauranteController {
     }
 
     @PostMapping
-    public Restaurante adicionar(@RequestBody Restaurante restaurante) {
-        return cadastroRestaurante.salvar(restaurante);
+    public ResponseEntity<Restaurante> adicionar(@RequestBody Restaurante restaurante) {
+        cadastroRestaurante.salvar(restaurante);
+        return ResponseEntity.status(201).body(restaurante);
     }
 
     @PutMapping("/{restauranteId}")

@@ -31,8 +31,9 @@ public class CozinhaController {
     }
 
     @PostMapping
-    public Cozinha adicionar(@RequestBody Cozinha cozinha) {
-        return cadastroCozinha.salvar(cozinha);
+    public ResponseEntity<Cozinha> adicionar(@RequestBody Cozinha cozinha) {
+        cadastroCozinha.salvar(cozinha);
+        return ResponseEntity.status(201).body(cozinha);
     }
 
     @PutMapping("/{cozinhaId}")
