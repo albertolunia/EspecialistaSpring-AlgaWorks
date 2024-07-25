@@ -3,7 +3,9 @@ package com.algaworks.algafood.api.controller;
 import com.algaworks.algafood.domain.model.Restaurante;
 import com.algaworks.algafood.domain.repository.RestauranteRepository;
 import com.algaworks.algafood.domain.service.CadastroRestauranteService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -11,7 +13,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/restaurantes")
 public class RestauranteController {
-
     @Autowired
     private RestauranteRepository restauranteRepository;
 
@@ -34,12 +35,14 @@ public class RestauranteController {
     }
 
     @PutMapping("/{restauranteId}")
-    public Restaurante atualizar(@PathVariable Long restauranteId, @RequestBody Restaurante restaurante) {
+    public ResponseEntity<Restaurante> atualizar(@PathVariable Long restauranteId, @RequestBody Restaurante restaurante) {
         Restaurante restauranteAtual = restauranteRepository.buscar(restauranteId);
 
-        restauranteAtual.setNome(restaurante.getNome());
+        BeanUtils.copyProperties(restaurante, restauranteAtual, "id");
 
-        return cadastroRestaurante.salvar(restauranteAtual);
+        restauranteAtual = cadastroRestaurante.salvar(restauranteAtual);
+
+        return ResponseEntity.ok(restauranteAtual);
     }
 
     @DeleteMapping("/{restauranteId}")

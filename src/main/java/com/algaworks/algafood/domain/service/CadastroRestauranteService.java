@@ -12,6 +12,9 @@ public class CadastroRestauranteService {
     private RestauranteRepository restauranteRepository;
 
     public Restaurante salvar(Restaurante restaurante) {
+        if(restaurante.getCozinha().getId() < 1){
+            throw new IllegalArgumentException("Cozinha não pode ser nula");
+        }
         return restauranteRepository.salvar(restaurante);
     }
 
