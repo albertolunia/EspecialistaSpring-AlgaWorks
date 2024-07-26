@@ -15,10 +15,10 @@ public class CadastroRestauranteService {
         if(restaurante.getCozinha().getId() != null){
             throw new IllegalArgumentException("Cozinha não pode ser nula");
         }
-        return restauranteRepository.salvar(restaurante);
+        return restauranteRepository.save(restaurante);
     }
 
     public void remover(Restaurante restauranteId) {
-        restauranteRepository.remover(restauranteId);
+        restauranteRepository.deleteById(restauranteId.getId());
     }
 }

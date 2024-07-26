@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import com.algaworks.algafood.domain.model.Estado;
 import com.algaworks.algafood.domain.repository.EstadoRepository;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -22,12 +23,13 @@ public class EstadoController {
 
     @GetMapping
     public List<Estado> listar() {
-        return estadoRepository.listar();
+        return estadoRepository.findAll();
     }
 
     @GetMapping("/{estadoId}")
-    public Estado buscar(@PathVariable Long estadoId) {
-        return estadoRepository.buscar(estadoId);
+    public ResponseEntity<Estado> buscar(@PathVariable Long estadoId) {
+        Optional<Estado> estado = estadoRepository.findById(estadoId);
+        return ResponseEntity.ok(estado.get());
     }
 
     @PostMapping
@@ -38,19 +40,16 @@ public class EstadoController {
 
     @PutMapping("/{estadoId}")
     public ResponseEntity<Estado> atualizar(@PathVariable Long estadoId, @RequestBody Estado estado) {
-        Estado estadoAtual = estadoRepository.buscar(estadoId);
-
-        BeanUtils.copyProperties(estado, estadoAtual, "id");
-
-        estadoAtual = cadastroEstado.salvar(estadoAtual);
-        return ResponseEntity.ok(estadoAtual);
+        Optional<Estado> estadoAtual = estadoRepository.findById(estadoId);
+        BeanUtils.copyProperties(estado, estadoAtual.get(), "id");
+        Estado estadoSalvo = cadastroEstado.salvar(estadoAtual.get());
+        return ResponseEntity.ok(estadoSalvo);
     }
 
     @DeleteMapping("/{estadoId}")
     public void remover(@PathVariable Long estadoId) {
-        Estado estadoAtual = estadoRepository.buscar(estadoId);
-        if(estadoAtual != null) {
-            cadastroEstado.remover(estadoAtual);
-        }
+        Optional<Estado> estadoAtual = estadoRepository.findById(estadoId);
+        Estado estadoSalvo = cadastroEstado.salvar(estadoAtual.get());
+        cadastroEstado.remover(estadoSalvo);
     }
 }

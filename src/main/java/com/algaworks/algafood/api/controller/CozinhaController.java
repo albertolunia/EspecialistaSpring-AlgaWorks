@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import com.algaworks.algafood.domain.model.Cozinha;
 import com.algaworks.algafood.domain.repository.CozinhaRepository;
 import java.util.List;
+import java.util.Optional;
 
 
 @RestController
@@ -22,12 +23,14 @@ public class CozinhaController {
 
     @GetMapping
     public List<Cozinha> listar() {
-        return cozinhaRepository.listar();
+        return cozinhaRepository.findAll();
     }
 
     @GetMapping("/{cozinhaId}")
-    public Cozinha buscar(@PathVariable Long cozinhaId) {
-        return cozinhaRepository.buscar(cozinhaId);
+    public ResponseEntity<Cozinha> buscar(@PathVariable Long cozinhaId) {
+        Optional<Cozinha> cozinha = cozinhaRepository.findById(cozinhaId);
+
+        return ResponseEntity.ok(cozinha.get());
     }
 
     @PostMapping
@@ -38,19 +41,19 @@ public class CozinhaController {
 
     @PutMapping("/{cozinhaId}")
     public ResponseEntity<Cozinha> atualizar(@PathVariable Long cozinhaId, @RequestBody Cozinha cozinha) {
-        Cozinha cozinhaAtual = cozinhaRepository.buscar(cozinhaId);
+        Optional<Cozinha> cozinhaAtual = cozinhaRepository.findById(cozinhaId);
 
-        BeanUtils.copyProperties(cozinha, cozinhaAtual, "id");
+        BeanUtils.copyProperties(cozinha, cozinhaAtual.get(), "id");
 
-        cozinhaAtual = cadastroCozinha.salvar(cozinhaAtual);
-        return ResponseEntity.ok(cozinhaAtual);
+        Cozinha cozinhaSalva = cadastroCozinha.salvar(cozinhaAtual.get());
+        return ResponseEntity.ok(cozinhaSalva);
     }
 
     @DeleteMapping("/{cozinhaId}")
     public void remover(@PathVariable Long cozinhaId) {
-        Cozinha cozinhaAtual = cozinhaRepository.buscar(cozinhaId);
-        if(cozinhaAtual != null) {
-            cadastroCozinha.remover(cozinhaAtual);
-        }
+        Optional<Cozinha> cozinhaAtual = cozinhaRepository.findById(cozinhaId);
+
+        Cozinha cozinhaSalva = cadastroCozinha.salvar(cozinhaAtual.get());
+        cadastroCozinha.remover(cozinhaSalva);
     }
 }

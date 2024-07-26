@@ -11,11 +11,11 @@ public class CadastroCozinhaService {
     private CozinhaRepository cozinhaRepository;
 
     public Cozinha salvar(Cozinha cozinha) {
-        return cozinhaRepository.salvar(cozinha);
+        return cozinhaRepository.save(cozinha);
     }
 
     public void remover(Cozinha cozinhaId) {
-        cozinhaRepository.remover(cozinhaId);
+        cozinhaRepository.deleteById(cozinhaId.getId());
     }
 
 

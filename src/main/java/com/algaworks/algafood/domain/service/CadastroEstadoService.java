@@ -11,10 +11,10 @@ public class CadastroEstadoService {
     private EstadoRepository estadoRepository;
 
     public Estado salvar(Estado estado) {
-        return estadoRepository.salvar(estado);
+        return estadoRepository.save(estado);
     }
 
     public void remover(Estado estadoId) {
-        estadoRepository.remover(estadoId);
+        estadoRepository.deleteById(estadoId.getId());
     }
 }

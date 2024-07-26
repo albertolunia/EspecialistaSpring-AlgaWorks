@@ -14,10 +14,10 @@ public class CadastroCidadeService {
         if(cidade.getEstado().getId() != null){
             throw new IllegalArgumentException("Estado não pode ser nulo");
         }
-        return cidadeRepository.salvar(cidade);
+        return cidadeRepository.save(cidade);
     }
 
     public void remover(Cidade cidadeId) {
-        cidadeRepository.remover(cidadeId);
+        cidadeRepository.deleteById(cidadeId.getId());
     }
 }

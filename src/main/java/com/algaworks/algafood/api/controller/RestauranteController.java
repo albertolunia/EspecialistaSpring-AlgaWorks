@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/restaurantes")
@@ -21,12 +22,13 @@ public class RestauranteController {
 
     @GetMapping
     public List<Restaurante> listar() {
-        return restauranteRepository.listar();
+        return restauranteRepository.findAll();
     }
 
     @GetMapping("/{restauranteId}")
-    public Restaurante buscar(@PathVariable Long restauranteId) {
-        return restauranteRepository.buscar(restauranteId);
+    public ResponseEntity<Restaurante> buscar(@PathVariable Long restauranteId) {
+        Optional<Restaurante> restaurante = restauranteRepository.findById(restauranteId);
+        return ResponseEntity.ok(restaurante.get());
     }
 
     @PostMapping
@@ -37,20 +39,16 @@ public class RestauranteController {
 
     @PutMapping("/{restauranteId}")
     public ResponseEntity<Restaurante> atualizar(@PathVariable Long restauranteId, @RequestBody Restaurante restaurante) {
-        Restaurante restauranteAtual = restauranteRepository.buscar(restauranteId);
-
-        BeanUtils.copyProperties(restaurante, restauranteAtual, "id");
-
-        restauranteAtual = cadastroRestaurante.salvar(restauranteAtual);
-
-        return ResponseEntity.ok(restauranteAtual);
+        Optional<Restaurante> restauranteAtual = restauranteRepository.findById(restauranteId);
+        BeanUtils.copyProperties(restaurante, restauranteAtual.get(), "id");
+        Restaurante restauranteSalvo = cadastroRestaurante.salvar(restauranteAtual.get());
+        return ResponseEntity.ok(restauranteSalvo);
     }
 
     @DeleteMapping("/{restauranteId}")
     public void remover(@PathVariable Long restauranteId) {
-        Restaurante restauranteAtual = restauranteRepository.buscar(restauranteId);
-        if(restauranteAtual != null) {
-            cadastroRestaurante.remover(restauranteAtual);
-        }
+        Optional<Restaurante> restauranteAtual = restauranteRepository.findById(restauranteId);
+        Restaurante restauranteSalvo = cadastroRestaurante.salvar(restauranteAtual.get());
+        cadastroRestaurante.remover(restauranteSalvo);
     }
 }
